@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחשבון הפרשי מונדיאל 2026</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #1b4332;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .panel {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .instruction {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        ul.sortable-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul.sortable-list li {
+            background: #e9ecef;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-right: 4px solid #2d6a4f;
+            transition: background 0.2s;
+            user-select: none;
+        }
+        ul.sortable-list li:active {
+            cursor: grabbing;
+        }
+        ul.sortable-list li.dragging {
+            opacity: 0.5;
+            background: #d8f3dc;
+        }
+        .rank-badge {
+            background: #2d6a4f;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #2d6a4f;
+            color: white;
+        }
+        .pos-diff {
+            color: #2d6a4f;
+            font-weight: bold;
+        }
+        .neg-diff {
+            color: #d90429;
+            font-weight: bold;
+        }
+        .zero-diff {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📊 מחשבון סטטיסטי אישי: מונדיאל 2026</h1>
+    
+    <div class="container">
+        <!-- פאנל סידור ידני -->
+        <div class="panel">
+            <h2>🥇 קבע את סדר המונדיאל</h2>
+            <div class="instruction">גרור והזז את הנבחרות מלמעלה למטה כדי לקבוע את המיקום הסופי שלהן</div>
+            <ul class="sortable-list" id="teams-list">
+                <!-- נבחרות ייטענו כאן דינמית -->
+            </ul>
+        </div>
+
+        <!-- פאנל טבלת הפרשים אוטומטית -->
+        <div class="panel">
+            <h2>📈 טבלת פערים מול דירוג פיפ"א</h2>
+            <div class="instruction">הטבלה מתעדכנת אוטומטית לפי הסידור שלך</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>מיקום שלך</th>
+                        <th>נבחרת</th>
+                        <th>פיפ"א (יוני '26)</th>
+                        <th>הפרש פער</th>
+                    </tr>
+                </thead>
+                <tbody id="analysis-table-body">
+                    <!-- שורות ייטענו כאן -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // רשימת הנבחרות במונדיאל 2026 עם דירוג פיפ"א הרשמי מיוני 2026
+        const teamsData = [
+            { name: "ארגנטינה 🇦🇷", fifa: 1 },
+            { name: "ספרד 🇪🇸", fifa: 2 },
+            { name: "צרפת 🇫🇷", fifa: 3 },
+            { name: "אנגליה 🏴󠁧󠁢󠁥󠁮󠁧󠁿", fifa: 4 },
+            { name: "פורטוגל 🇵🇹", fifa: 5 },
+            { name: "ברזיל 🇧🇷", fifa: 6 },
+            { name: "מרוקו 🇲🇦", fifa: 7 },
+            { name: "הולנד 🇳🇱", fifa: 8 },
+            { name: "בלגיה 🇧🇪", fifa: 9 },
+            { name: "גרמניה 🇩🇪", fifa: 10 },
+            { name: "קרואטיה 🇭🇷", fifa: 11 },
+            { name: "קולומביה 🇨🇴", fifa: 13 },
+            { name: "מקסיקו 🇲🇽", fifa: 14 },
+            { name: "סנגל 🇸🇳", fifa: 15 },
+            { name: "אורוגוואי 🇺🇾", fifa: 16 },
+            { name: "ארצות הברית 🇺🇸", fifa: 17 },
+            { name: "יפן 🇯🇵", fifa: 18 },
+            { name: "שווייץ 🇨🇭", fifa: 19 },
+            { name: "איראן 🇮🇷", fifa: 20 },
+            { name: "טורקיה 🇹🇷", fifa: 22 },
+            { name: "אקוודור 🇪🇨", fifa: 23 },
+            { name: "אוסטריה 🇦🇹", fifa: 24 },
+            { name: "דרום קוריאה 🇰🇷", fifa: 25 },
+            { name: "אוסטרליה 🇦🇺", fifa: 27 },
+            { name: "אלג'יריה 🇩🇿", fifa: 28 },
+            { name: "מצרים 🇪🇬", fifa: 29 },
+            { name: "קנדה 🇨🇦", fifa: 30 },
+            { name: "נורווגיה 🇳🇴", fifa: 31 },
+            { name: "אוקראינה 🇺🇦", fifa: 32 },
+            { name: "חוף השנהב 🇨🇮", fifa: 33 },
+            { name: "פנמה 🇵🇦", fifa: 34 },
+            { name: "שוודיה 🇸🇪", fifa: 38 },
+            { name: "צ'כיה 🇨🇿", fifa: 40 },
+            { name: "פרגוואי 🇵🇾", fifa: 41 },
+            { name: "סקוטלנד 🏴󠁧󠁢󠁳󠁣󠁴󠁿", fifa: 42 },
+            { name: "קמרון 🇨🇲", fifa: 44 },
+            { name: "תוניסיה 🇹🇳", fifa: 45 },
+            { name: "קונגו DR 🇨🇩", fifa: 46 },
+            { name: "אוזבקיסטן 🇺🇿", fifa: 50 },
+            { name: "צ'ילה 🇨🇱", fifa: 51 },
+            { name: "פרו 🇵🇪", fifa: 52 },
+            { name: "קוסטה ריקה 🇨🇷", fifa: 53 },
+            { name: "קטר 🇶🇦", fifa: 56 },
+            { name: "עיראק 🇮🇶", fifa: 57 },
+            { name: "דרום אפריקה 🇿🇦", fifa: 60 },
+            { name: "ערב הסעודית 🇸🇦", fifa: 61 },
+            { name: "ירדן 🇯🇴", fifa: 63 },
+            { name: "בוסניה והרצגובינה 🇧🇦", fifa: 64 },
+            { name: "כף ורדה 🇨🇻", fifa: 67 }
+        ];
+
+        const idMap = {};
+        teamsData.forEach((t, index) => {
+            idMap[index] = t;
+        });
+
+        const listContainer = document.getElementById('teams-list');
+
+        // אתחול הרשימה הגרפי
+        function initList() {
+            teamsData.forEach((team, index) => {
+                const li = document.createElement('li');
+                li.draggable = true;
+                li.dataset.id = index;
+                li.innerHTML = `
+                    <span>${team.name}</span>
+                    <span class="rank-badge">פיפ"א: ${team.fifa}</span>
+                `;
+                listContainer.appendChild(li);
+            });
+        }
+
+        initList();
+
+        // לוגיקת גרירה ושחרור (Drag and Drop)
+        listContainer.addEventListener('dragstart', (e) => {
+            if (e.target.tagName === 'LI') {
+                e.target.classList.add('dragging');
+            }
+        });
+
+        listContainer.addEventListener('dragend', (e) => {
+            if (e.target.tagName === 'LI') {
+                e.target.classList.remove('dragging');
+                updateAnalysisTable();
+            }
+        });
+
+        listContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const draggingItem = document.querySelector('.dragging');
+            const siblings = [...listContainer.querySelectorAll('li:not(.dragging)')];
+            
+            let nextSibling = siblings.find(sibling => {
+                return e.clientY <= sibling.getBoundingClientRect().top + sibling.getBoundingClientRect().height / 2;
+            });
+            
+            listContainer.insertBefore(draggingItem, nextSibling);
+        });
+
+        // עדכון טבלת הניתוח הסטטיסטי
+        function updateAnalysisTable() {
+            const tbody = document.getElementById('analysis-table-body');
+            tbody.innerHTML = '';
+            
+            const currentOrder = [...listContainer.querySelectorAll('li')];
+            
+            currentOrder.forEach((li, index) => {
+                const teamId = li.dataset.id;
+                const team = idMap[teamId];
+                const myRank = index + 1;
+                const diff = team.fifa - myRank; // חיובי = הפתיעה לטובה, שלילי = איכזבה
+                
+                let diffClass = 'zero-diff';
+                let diffText = diff.toString();
+                if (diff > 0) {
+                    diffClass = 'pos-diff';
+                    diffText = `+${diff}`;
+                } else if (diff < 0) {
+                    diffClass = 'neg-diff';
+                }
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${myRank}</strong></td>
+                    <td>${team.name}</td>
+                    <td>${team.fifa}</td>
+                    <td class="${diffClass}">${diffText}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // הרצה ראשונית של הטבלה
+        updateAnalysisTable();
+    </script>
+</body>
+</html>
