@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון מונדיאל אינטראקטיבי</title>
+    <title>מחשבון פערים מתקדמת - מונדיאל 2026</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,25 +12,29 @@
             padding: 20px;
             color: #333;
         }
-        h1, h2 {
+        h1 {
             text-align: center;
             color: #1b4332;
+            margin-bottom: 30px;
         }
         .container {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 25px;
             justify-content: center;
-            max-width: 1350px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         .panel {
             flex: 1;
-            min-width: 350px;
+            min-width: 450px;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
         }
         .instruction {
             font-size: 0.9em;
@@ -38,108 +42,147 @@
             text-align: center;
             margin-bottom: 15px;
         }
+        .scrollable-area {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-left: 5px;
+        }
+        .stage-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        .stage-title {
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #2d6a4f;
+            color: #1b4332;
+        }
         ul.sortable-list {
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 75vh;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
+            min-height: 40px;
         }
         ul.sortable-list li {
-            background: #e9ecef;
-            padding: 10px 15px;
-            margin-bottom: 8px;
+            background: #fff;
+            padding: 8px 12px;
+            margin-bottom: 6px;
             border-radius: 4px;
             cursor: grab;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-right: 4px solid #2d6a4f;
-            transition: background 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             user-select: none;
+            font-size: 0.9em;
         }
-        ul.sortable-list li:active {
-            cursor: grabbing;
-        }
-        ul.sortable-list li.dragging {
-            opacity: 0.5;
-            background: #d8f3dc;
-        }
+        ul.sortable-list li:active { cursor: grabbing; }
+        ul.sortable-list li.dragging { opacity: 0.4; background: #d8f3dc; }
         .rank-badge {
-            background: #2d6a4f;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: bold;
-        }
-        .table-wrapper {
-            max-height: 75vh;
-            overflow-y: auto;
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
         }
         table {
             width: 100%;
             border-collapse: collapse;
         }
         th, td {
-            padding: 8px 10px;
+            padding: 8px 6px;
             text-align: center;
             border-bottom: 1px solid #ddd;
-            font-size: 0.95em;
+            font-size: 0.9em;
         }
         th {
             background-color: #2d6a4f;
             color: white;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
         .pos-diff { color: #2d6a4f; font-weight: bold; }
         .neg-diff { color: #d90429; font-weight: bold; }
         .zero-diff { color: #666; }
         
-        /* צבעים לפי שלבי הנוקאאוט והבתים */
-        .stage-g { background-color: #d8f3dc; font-size: 0.85em; font-weight: bold; border-radius: 4px; }
-        .stage-4 { background-color: #e2eafc; font-size: 0.85em; }
-        .stage-8 { background-color: #f0efa6; font-size: 0.85em; }
-        .stage-16 { background-color: #fad2e1; font-size: 0.85em; }
-        .stage-32 { background-color: #ffe5ec; font-size: 0.85em; }
-        .stage-b { background-color: #f8f9fa; color: #888; font-size: 0.85em; }
+        /* צבעים ייעודיים לשלבים בטבלה */
+        .badge-stage {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .b-g { background-color: #d8f3dc; color: #1b4332; }
+        .b-4 { background-color: #e2eafc; color: #1d3557; }
+        .b-8 { background-color: #f0efa6; color: #5f5e00; }
+        .b-16 { background-color: #fad2e1; color: #7209b7; }
+        .b-32 { background-color: #ffe5ec; color: #ff0054; }
+        .b-b { background-color: #f1f3f5; color: #6c757d; }
     </style>
 </head>
 <body>
 
-    <h1>📊 סידור מונדיאל ומחשבון פערים אישי</h1>
+    <h1>📊 מחשבון מונדיאל 2026: הפתעות מול אכזבות</h1>
     
     <div class="container">
-        <!-- פאנל סידור ידני -->
+        <!-- פאנל ימני: סידור לפי שלבים -->
         <div class="panel">
-            <h2>🥇 סדר את המיקומים (גרור והזז)</h2>
-            <div class="instruction">תפוס נבחרת וגרור אותה למעלה או למטה כדי לקבוע את מיקומה הסופי</div>
-            <ul class="sortable-list" id="teams-list">
-                <!-- ייטען דינמית -->
-            </ul>
+            <h2>🥇 סידור הנבחרות לפי שלבי הטורניר</h2>
+            <div class="instruction">גרור נבחרות כדי לסדר את הדירוג הפנימי (ניתן להעביר גם בין שלבים)</div>
+            
+            <div class="scrollable-area">
+                <div class="stage-box">
+                    <div class="stage-title">🏆 גמר הטורניר (מקומות 1-2)</div>
+                    <ul class="sortable-list" id="stage-finals"></ul>
+                </div>
+                <div class="stage-box">
+                    <div class="stage-title">🥉 חצי גמר / מקום 3-4 (מקומות 3-4)</div>
+                    <ul class="sortable-list" id="stage-semis"></ul>
+                </div>
+                <div class="stage-box">
+                    <div class="stage-title">🛑 רבע גמר (מקומות 5-8)</div>
+                    <ul class="sortable-list" id="stage-quarters"></ul>
+                </div>
+                <div class="stage-box">
+                    <div class="stage-title">⚽ שמינית גמר (מקומות 9-16)</div>
+                    <ul class="sortable-list" id="stage-round16"></ul>
+                </div>
+                <div class="stage-box">
+                    <div class="stage-title">🥊 שלב 32 האחרונות (מקומות 17-32)</div>
+                    <ul class="sortable-list" id="stage-round32"></ul>
+                </div>
+                <div class="stage-box">
+                    <div class="stage-title">📉 שלב הבתים (מקומות 33-48)</div>
+                    <ul class="sortable-list" id="stage-groups"></ul>
+                </div>
+            </div>
         </div>
 
-        <!-- פאנל טבלת הפרשים וחלוקה לשלבים -->
+        <!-- פאנל שמאלי: טבלת הפתעות ואכזבות ממוינת -->
         <div class="panel">
-            <h2>📈 ניתוח פערים מול דירוג פיפ"א</h2>
-            <div class="instruction">השלבים וההפרשים מחושבים אוטומטית בזמן אמת</div>
-            <div class="table-wrapper">
+            <h2>📈 מדד הסטייה: מההפתעה הכי גדולה לאכזבה הכי גדולה</h2>
+            <div class="instruction">הטבלה ממוינת אוטומטית לפי הפרש הפער (פיפ"א פחות המיקום שלך)</div>
+            <div class="scrollable-area">
                 <table>
                     <thead>
                         <tr>
-                            <th>מיקום</th>
-                            <th>שלב הגעה</th>
                             <th>נבחרת</th>
+                            <th>שלב אצלך</th>
+                            <th>מיקום סופי</th>
                             <th>דירוג פיפ"א</th>
-                            <th>הפרש</th>
+                            <th>הפרש פער</th>
                         </tr>
                     </thead>
                     <tbody id="analysis-table-body">
-                        <!-- שורות ייטענו כאן -->
+                        <!-- שורות ייטענו כאן בלייב -->
                     </tbody>
                 </table>
             </div>
@@ -147,149 +190,174 @@
     </div>
 
     <script>
-        // רשימת הנבחרות המדויקת של מונדיאל 2026 עם דירוג פיפ"א הרשמי שלהן ערב הטורניר
-        const teamsData = [
-            { name: "ארגנטינה 🇦🇷", fifa: 1 },
-            { name: "ספרד 🇪🇸", fifa: 2 },
-            { name: "צרפת 🇫🇷", fifa: 3 },
-            { name: "אנגליה 🏴󠁧󠁢󠁥󠁮󠁧󠁿", fifa: 4 },
-            { name: "פורטוגל 🇵🇹", fifa: 5 },
-            { name: "ברזיל 🇧🇷", fifa: 6 },
-            { name: "מרוקו 🇲🇦", fifa: 7 },
-            { name: "הולנד 🇳🇱", fifa: 8 },
-            { name: "בלגיה 🇧🇪", fifa: 9 },
-            { name: "גרמניה 🇩🇪", fifa: 10 },
-            { name: "קרואטיה 🇭🇷", fifa: 11 },
-            { name: "קולומביה 🇨🇴", fifa: 13 },
-            { name: "מקסיקו 🇲🇽", fifa: 14 },
-            { name: "סנגל 🇸🇳", fifa: 15 },
-            { name: "אורוגוואי 🇺🇾", fifa: 16 },
-            { name: "ארצות הברית 🇺🇸", fifa: 17 },
-            { name: "יפן 🇯🇵", fifa: 18 },
-            { name: "שווייץ 🇨🇭", fifa: 19 },
-            { name: "איראן 🇮🇷", fifa: 20 },
-            { name: "דנמרק 🇩🇰", fifa: 21 },
-            { name: "אקוודור 🇪🇨", fifa: 23 },
-            { name: "דרום קוריאה 🇰🇷", fifa: 25 },
-            { name: "אוסטרליה 🇦🇺", fifa: 27 },
-            { name: "אלג'יריה 🇩🇿", fifa: 28 },
-            { name: "מצרים 🇪🇬", fifa: 29 },
-            { name: "קנדה 🇨🇦", fifa: 30 },
-            { name: "נורווגיה 🇳🇴", fifa: 31 },
-            { name: "אוקראינה 🇺🇦", fifa: 32 },
-            { name: "חוף השנהב 🇨🇮", fifa: 33 },
-            { name: "פנמה 🇵🇦", fifa: 34 },
-            { name: "ניגריה 🇳🇬", fifa: 36 },
-            { name: "פולין 🇵🇱", fifa: 37 },
-            { name: "פרגוואי 🇵🇾", fifa: 41 },
-            { name: "קמרון 🇨🇲", fifa: 44 },
-            { name: "תוניסיה 🇹🇳", fifa: 45 },
-            { name: "קונגו DR 🇨🇩", fifa: 46 },
-            { name: "מאלי 🇲🇱", fifa: 47 },
-            { name: "רומניה 🇷🇴", fifa: 48 },
-            { name: "אוזבקיסטן 🇺🇿", fifa: 50 },
-            { name: "צ'ילה 🇨🇱", fifa: 51 },
-            { name: "פרו 🇵🇪", fifa: 52 },
-            { name: "קוסטה ריקה 🇨🇷", fifa: 53 },
-            { name: "קטר 🇶🇦", fifa: 56 },
-            { name: "עיראק 🇮🇶", fifa: 57 },
-            { name: "דרום אפריקה 🇿🇦", fifa: 60 },
-            { name: "ערב הסעודית 🇸🇦", fifa: 61 },
-            { name: "ירדן 🇯🇴", fifa: 63 },
-            { name: "כף ורדה 🇨🇻", fifa: 67 }
+        // 48 הנבחרות האמיתיות שהשתתפו במונדיאל 2026
+        const initialTeams = [
+            { id: 0, name: "ארגנטינה 🇦🇷", fifa: 1, initialStage: "finals" },
+            { id: 1, name: "ספרד 🇪🇸", fifa: 2, initialStage: "finals" },
+            { id: 2, name: "צרפת 🇫🇷", fifa: 3, initialStage: "semis" },
+            { id: 3, name: "אנגליה 🏴󠁧󠁢󠁥󠁮󠁧󠁿", fifa: 4, initialStage: "semis" },
+            { id: 4, name: "פורטוגל 🇵🇹", fifa: 5, initialStage: "round16" },
+            { id: 5, name: "ברזיל 🇧🇷", fifa: 6, initialStage: "round16" },
+            { id: 6, name: "מרוקו 🇲🇦", fifa: 7, initialStage: "quarters" },
+            { id: 7, name: "הולנד 🇳🇱", fifa: 8, initialStage: "round32" },
+            { id: 8, name: "בלגיה 🇧🇪", fifa: 9, initialStage: "quarters" },
+            { id: 9, name: "גרמניה 🇩🇪", fifa: 10, initialStage: "round32" },
+            { id: 10, name: "קרואטיה 🇭🇷", fifa: 11, initialStage: "round32" },
+            { id: 11, name: "קולומביה 🇨🇴", fifa: 13, initialStage: "round16" },
+            { id: 12, name: "מקסיקו 🇲🇽", fifa: 14, initialStage: "round16" },
+            { id: 13, name: "סנגל 🇸🇳", fifa: 15, initialStage: "round32" },
+            { id: 14, name: "אורוגוואי 🇺🇾", fifa: 16, initialStage: "groups" },
+            { id: 15, name: "ארצות הברית 🇺🇸", fifa: 17, initialStage: "round16" },
+            { id: 16, name: "יפן 🇯🇵", fifa: 18, initialStage: "round32" },
+            { id: 17, name: "שווייץ 🇨🇭", fifa: 19, initialStage: "quarters" },
+            { id: 18, name: "איראן 🇮🇷", fifa: 20, initialStage: "groups" },
+            { id: 19, name: "דנמרק 🇩🇰", fifa: 21, initialStage: "groups" },
+            { id: 20, name: "אקוודור 🇪🇨", fifa: 23, initialStage: "round32" },
+            { id: 21, name: "דרום קוריאה 🇰🇷", fifa: 25, initialStage: "groups" },
+            { id: 22, name: "אוסטרליה 🇦🇺", fifa: 27, initialStage: "round32" },
+            { id: 23, name: "אלג'יריה 🇩🇿", fifa: 28, initialStage: "round32" },
+            { id: 24, name: "מצרים 🇪🇬", fifa: 29, initialStage: "round16" },
+            { id: 25, name: "קנדה 🇨🇦", fifa: 30, initialStage: "round16" },
+            { id: 26, name: "נורווגיה 🇳🇴", fifa: 31, initialStage: "quarters" },
+            { id: 27, name: "אוקראינה 🇺🇦", fifa: 32, initialStage: "groups" },
+            { id: 28, name: "חוף השנהב 🇨🇮", fifa: 33, initialStage: "round32" },
+            { id: 29, name: "פנמה 🇵🇦", fifa: 34, initialStage: "groups" },
+            { id: 30, name: "ניגריה 🇳🇬", fifa: 36, initialStage: "groups" },
+            { id: 31, name: "פולין 🇵🇱", fifa: 37, initialStage: "groups" },
+            { id: 32, name: "פרגוואי 🇵🇾", fifa: 41, initialStage: "round16" },
+            { id: 33, name: "קמרון 🇨🇲", fifa: 44, initialStage: "groups" },
+            { id: 34, name: "תוניסיה 🇹🇳", fifa: 45, initialStage: "groups" },
+            { id: 35, name: "קונגו DR 🇨🇩", fifa: 46, initialStage: "round32" },
+            { id: 36, name: "מאלי 🇲🇱", fifa: 47, initialStage: "groups" },
+            { id: 37, name: "רומניה 🇷🇴", fifa: 48, initialStage: "groups" },
+            { id: 38, name: "אוזבקיסטן 🇺🇿", fifa: 50, initialStage: "groups" },
+            { id: 39, name: "צ'ילה 🇨🇱", fifa: 51, initialStage: "groups" },
+            { id: 40, name: "פרו 🇵🇪", fifa: 52, initialStage: "groups" },
+            { id: 41, name: "קוסטה ריקה 🇨🇷", fifa: 53, initialStage: "groups" },
+            { id: 42, name: "קטר 🇶🇦", fifa: 56, initialStage: "groups" },
+            { id: 43, name: "עיראק 🇮🇶", fifa: 57, initialStage: "groups" },
+            { id: 44, name: "דרום אפריקה 🇿🇦", fifa: 60, initialStage: "round32" },
+            { id: 45, name: "ערב הסעודית 🇸🇦", fifa: 61, initialStage: "groups" },
+            { id: 46, name: "ירדן 🇯🇴", fifa: 63, initialStage: "round32" },
+            { id: 47, name: "כף ורדה 🇨🇻", fifa: 67, initialStage: "round32" }
         ];
 
         const idMap = {};
-        teamsData.forEach((t, idx) => { idMap[idx] = t; });
+        initialTeams.forEach(t => idMap[t.id] = t);
 
-        const listContainer = document.getElementById('teams-list');
-
-        function initList() {
-            teamsData.forEach((team, index) => {
+        // פיזור ראשוני לתיבות השלבים
+        function initLists() {
+            initialTeams.forEach(team => {
+                const container = document.getElementById(`stage-${team.initialStage}`);
                 const li = document.createElement('li');
                 li.draggable = true;
-                li.dataset.id = index;
+                li.dataset.id = team.id;
                 li.innerHTML = `
                     <span>${team.name}</span>
-                    <span class="rank-badge">פיפ"א: ${team.fifa}</span>
+                    <span class="rank-badge">פיפ"א ${team.fifa}</span>
                 `;
-                listContainer.appendChild(li);
+                container.appendChild(li);
             });
         }
 
-        initList();
+        initLists();
 
-        // חלוקת המיקומים לשלבי המונדיאל
-        function getStageInfo(rank) {
-            if (rank === 1) return { text: "🥇 אלופה", className: "stage-g" };
-            if (rank === 2) return { text: "🥈 סגנית", className: "stage-g" };
-            if (rank === 3) return { text: "🥉 מקום 3", className: "stage-4" };
-            if (rank === 4) return { text: "מקום 4", className: "stage-4" };
-            if (rank >= 5 && rank <= 8) return { text: "רבע גמר", className: "stage-8" };
-            if (rank >= 9 && rank <= 16) return { text: "שמינית גמר", className: "stage-16" };
-            if (rank >= 17 && rank <= 32) return { text: "32 האחרונות", className: "stage-32" };
-            return { text: "שלב הבתים", className: "stage-b" };
+        // הגדרת פונקציית טקסט וצבע שלב לפי מזהה התיבה
+        function getStageDisplay(listId) {
+            if (listId === 'stage-finals') return { text: "גמר", cls: "b-g" };
+            if (listId === 'stage-semis') return { text: "חצי גמר", cls: "b-4" };
+            if (listId === 'stage-quarters') return { text: "רבע גמר", cls: "b-8" };
+            if (listId === 'stage-round16') return { text: "שמינית גמר", cls: "b-16" };
+            if (listId === 'stage-round32') return { text: "32 האחרונות", cls: "b-32" };
+            return { text: "שלב הבתים", cls: "b-b" };
         }
 
-        // לוגיקת גרירה
-        listContainer.addEventListener('dragstart', (e) => {
-            if (e.target.tagName === 'LI') e.target.classList.add('dragging');
-        });
-
-        listContainer.addEventListener('dragend', (e) => {
-            if (e.target.tagName === 'LI') {
-                e.target.classList.remove('dragging');
-                updateAnalysisTable();
-            }
-        });
-
-        listContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const draggingItem = document.querySelector('.dragging');
-            const siblings = [...listContainer.querySelectorAll('li:not(.dragging)')];
-            
-            let nextSibling = siblings.find(sibling => {
-                return e.clientY <= sibling.getBoundingClientRect().top + sibling.getBoundingClientRect().height / 2;
+        // לוגיקת Drag & Drop חוצת רשימות
+        const lists = document.querySelectorAll('ul.sortable-list');
+        lists.forEach(list => {
+            list.addEventListener('dragstart', (e) => {
+                if (e.target.tagName === 'LI') e.target.classList.add('dragging');
             });
-            
-            listContainer.insertBefore(draggingItem, nextSibling);
+
+            list.addEventListener('dragend', (e) => {
+                if (e.target.tagName === 'LI') {
+                    e.target.classList.remove('dragging');
+                    updateAnalysisTable();
+                }
+            });
+
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const draggingItem = document.querySelector('.dragging');
+                const siblings = [...list.querySelectorAll('li:not(.dragging)')];
+                
+                let nextSibling = siblings.find(sibling => {
+                    return e.clientY <= sibling.getBoundingClientRect().top + sibling.getBoundingClientRect().height / 2;
+                });
+                
+                list.insertBefore(draggingItem, nextSibling);
+            });
         });
 
+        // עדכון ומיון של טבלת הניתוח
         function updateAnalysisTable() {
             const tbody = document.getElementById('analysis-table-body');
             tbody.innerHTML = '';
             
-            const currentOrder = [...listContainer.querySelectorAll('li')];
-            
-            currentOrder.forEach((li, index) => {
-                const teamId = li.dataset.id;
-                const team = idMap[teamId];
-                const myRank = index + 1;
-                const diff = team.fifa - myRank; 
+            // סדר התיבות מלמעלה למטה לקביעת המיקום הסופי הליניארי (1 עד 48)
+            const stageOrder = ['stage-finals', 'stage-semis', 'stage-quarters', 'stage-round16', 'stage-round32', 'stage-groups'];
+            let currentGlobalRank = 1;
+            let collectedData = [];
+
+            stageOrder.forEach(listId => {
+                const listEl = document.getElementById(listId);
+                const items = [...listEl.querySelectorAll('li')];
+                const stageInfo = getStageDisplay(listId);
                 
+                items.forEach(item => {
+                    const team = idMap[item.dataset.id];
+                    const diff = team.fifa - currentGlobalRank;
+                    
+                    collectedData.push({
+                        name: team.name,
+                        fifa: team.fifa,
+                        myRank: currentGlobalRank,
+                        diff: diff,
+                        stageText: stageInfo.text,
+                        stageCls: stageInfo.cls
+                    });
+                    
+                    currentGlobalRank++;
+                });
+            });
+
+            // מיון הטבלה מהפער החיובי הגבוה ביותר (הפתעה) לשלילי הנמוך ביותר (אכזבה)
+            collectedData.sort((a, b) => b.diff - a.diff);
+
+            // בניית שורות הטבלה
+            collectedData.forEach(row => {
                 let diffClass = 'zero-diff';
-                let diffText = diff.toString();
-                if (diff > 0) {
+                let diffText = row.diff.toString();
+                if (row.diff > 0) {
                     diffClass = 'pos-diff';
-                    diffText = `+${diff}`;
-                } else if (diff < 0) {
+                    diffText = `+${row.diff}`;
+                } else if (row.diff < 0) {
                     diffClass = 'neg-diff';
                 }
-                
-                const stageInfo = getStageInfo(myRank);
-                
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${myRank}</strong></td>
-                    <td class="${stageInfo.className}">${stageInfo.text}</td>
-                    <td>${team.name}</td>
-                    <td>${team.fifa}</td>
+                    <td><strong>${row.name}</strong></td>
+                    <td><span class="badge-stage ${row.stageCls}">${row.stageText}</span></td>
+                    <td>מקום ${row.myRank}</td>
+                    <td>${row.fifa}</td>
                     <td class="${diffClass}">${diffText}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
+        // הרצה ראשונית
         updateAnalysisTable();
     </script>
 </body>
