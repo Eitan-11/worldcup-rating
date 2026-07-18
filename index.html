@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון הפרשי מונדיאל 2026</title>
+    <title>מחשבון מונדיאל אינטראקטיבי</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -21,12 +21,12 @@
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
-            max-width: 1200px;
+            max-width: 1350px;
             margin: 0 auto;
         }
         .panel {
             flex: 1;
-            min-width: 300px;
+            min-width: 350px;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -42,6 +42,11 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            max-height: 75vh;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
         }
         ul.sortable-list li {
             background: #e9ecef;
@@ -71,69 +76,78 @@
             font-size: 0.85em;
             font-weight: bold;
         }
+        .table-wrapper {
+            max-height: 75vh;
+            overflow-y: auto;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
         th, td {
-            padding: 10px;
+            padding: 8px 10px;
             text-align: center;
             border-bottom: 1px solid #ddd;
+            font-size: 0.95em;
         }
         th {
             background-color: #2d6a4f;
             color: white;
+            position: sticky;
+            top: 0;
         }
-        .pos-diff {
-            color: #2d6a4f;
-            font-weight: bold;
-        }
-        .neg-diff {
-            color: #d90429;
-            font-weight: bold;
-        }
-        .zero-diff {
-            color: #666;
-        }
+        .pos-diff { color: #2d6a4f; font-weight: bold; }
+        .neg-diff { color: #d90429; font-weight: bold; }
+        .zero-diff { color: #666; }
+        
+        /* צבעים לפי שלבי הנוקאאוט והבתים */
+        .stage-g { background-color: #d8f3dc; font-size: 0.85em; font-weight: bold; border-radius: 4px; }
+        .stage-4 { background-color: #e2eafc; font-size: 0.85em; }
+        .stage-8 { background-color: #f0efa6; font-size: 0.85em; }
+        .stage-16 { background-color: #fad2e1; font-size: 0.85em; }
+        .stage-32 { background-color: #ffe5ec; font-size: 0.85em; }
+        .stage-b { background-color: #f8f9fa; color: #888; font-size: 0.85em; }
     </style>
 </head>
 <body>
 
-    <h1>📊 מחשבון סטטיסטי אישי: מונדיאל 2026</h1>
+    <h1>📊 סידור מונדיאל ומחשבון פערים אישי</h1>
     
     <div class="container">
         <!-- פאנל סידור ידני -->
         <div class="panel">
-            <h2>🥇 קבע את סדר המונדיאל</h2>
-            <div class="instruction">גרור והזז את הנבחרות מלמעלה למטה כדי לקבוע את המיקום הסופי שלהן</div>
+            <h2>🥇 סדר את המיקומים (גרור והזז)</h2>
+            <div class="instruction">תפוס נבחרת וגרור אותה למעלה או למטה כדי לקבוע את מיקומה הסופי</div>
             <ul class="sortable-list" id="teams-list">
-                <!-- נבחרות ייטענו כאן דינמית -->
+                <!-- ייטען דינמית -->
             </ul>
         </div>
 
-        <!-- פאנל טבלת הפרשים אוטומטית -->
+        <!-- פאנל טבלת הפרשים וחלוקה לשלבים -->
         <div class="panel">
-            <h2>📈 טבלת פערים מול דירוג פיפ"א</h2>
-            <div class="instruction">הטבלה מתעדכנת אוטומטית לפי הסידור שלך</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>מיקום שלך</th>
-                        <th>נבחרת</th>
-                        <th>פיפ"א (יוני '26)</th>
-                        <th>הפרש פער</th>
-                    </tr>
-                </thead>
-                <tbody id="analysis-table-body">
-                    <!-- שורות ייטענו כאן -->
-                </tbody>
-            </table>
+            <h2>📈 ניתוח פערים מול דירוג פיפ"א</h2>
+            <div class="instruction">השלבים וההפרשים מחושבים אוטומטית בזמן אמת</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>מיקום</th>
+                            <th>שלב הגעה</th>
+                            <th>נבחרת</th>
+                            <th>דירוג פיפ"א</th>
+                            <th>הפרש</th>
+                        </tr>
+                    </thead>
+                    <tbody id="analysis-table-body">
+                        <!-- שורות ייטענו כאן -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // רשימת הנבחרות במונדיאל 2026 עם דירוג פיפ"א הרשמי מיוני 2026
+        // רשימת הנבחרות המדויקת של מונדיאל 2026 עם דירוג פיפ"א הרשמי שלהן ערב הטורניר
         const teamsData = [
             { name: "ארגנטינה 🇦🇷", fifa: 1 },
             { name: "ספרד 🇪🇸", fifa: 2 },
@@ -154,9 +168,8 @@
             { name: "יפן 🇯🇵", fifa: 18 },
             { name: "שווייץ 🇨🇭", fifa: 19 },
             { name: "איראן 🇮🇷", fifa: 20 },
-            { name: "טורקיה 🇹🇷", fifa: 22 },
+            { name: "דנמרק 🇩🇰", fifa: 21 },
             { name: "אקוודור 🇪🇨", fifa: 23 },
-            { name: "אוסטריה 🇦🇹", fifa: 24 },
             { name: "דרום קוריאה 🇰🇷", fifa: 25 },
             { name: "אוסטרליה 🇦🇺", fifa: 27 },
             { name: "אלג'יריה 🇩🇿", fifa: 28 },
@@ -166,13 +179,14 @@
             { name: "אוקראינה 🇺🇦", fifa: 32 },
             { name: "חוף השנהב 🇨🇮", fifa: 33 },
             { name: "פנמה 🇵🇦", fifa: 34 },
-            { name: "שוודיה 🇸🇪", fifa: 38 },
-            { name: "צ'כיה 🇨🇿", fifa: 40 },
+            { name: "ניגריה 🇳🇬", fifa: 36 },
+            { name: "פולין 🇵🇱", fifa: 37 },
             { name: "פרגוואי 🇵🇾", fifa: 41 },
-            { name: "סקוטלנד 🏴󠁧󠁢󠁳󠁣󠁴󠁿", fifa: 42 },
             { name: "קמרון 🇨🇲", fifa: 44 },
             { name: "תוניסיה 🇹🇳", fifa: 45 },
             { name: "קונגו DR 🇨🇩", fifa: 46 },
+            { name: "מאלי 🇲🇱", fifa: 47 },
+            { name: "רומניה 🇷🇴", fifa: 48 },
             { name: "אוזבקיסטן 🇺🇿", fifa: 50 },
             { name: "צ'ילה 🇨🇱", fifa: 51 },
             { name: "פרו 🇵🇪", fifa: 52 },
@@ -182,18 +196,14 @@
             { name: "דרום אפריקה 🇿🇦", fifa: 60 },
             { name: "ערב הסעודית 🇸🇦", fifa: 61 },
             { name: "ירדן 🇯🇴", fifa: 63 },
-            { name: "בוסניה והרצגובינה 🇧🇦", fifa: 64 },
             { name: "כף ורדה 🇨🇻", fifa: 67 }
         ];
 
         const idMap = {};
-        teamsData.forEach((t, index) => {
-            idMap[index] = t;
-        });
+        teamsData.forEach((t, idx) => { idMap[idx] = t; });
 
         const listContainer = document.getElementById('teams-list');
 
-        // אתחול הרשימה הגרפי
         function initList() {
             teamsData.forEach((team, index) => {
                 const li = document.createElement('li');
@@ -209,11 +219,21 @@
 
         initList();
 
-        // לוגיקת גרירה ושחרור (Drag and Drop)
+        // חלוקת המיקומים לשלבי המונדיאל
+        function getStageInfo(rank) {
+            if (rank === 1) return { text: "🥇 אלופה", className: "stage-g" };
+            if (rank === 2) return { text: "🥈 סגנית", className: "stage-g" };
+            if (rank === 3) return { text: "🥉 מקום 3", className: "stage-4" };
+            if (rank === 4) return { text: "מקום 4", className: "stage-4" };
+            if (rank >= 5 && rank <= 8) return { text: "רבע גמר", className: "stage-8" };
+            if (rank >= 9 && rank <= 16) return { text: "שמינית גמר", className: "stage-16" };
+            if (rank >= 17 && rank <= 32) return { text: "32 האחרונות", className: "stage-32" };
+            return { text: "שלב הבתים", className: "stage-b" };
+        }
+
+        // לוגיקת גרירה
         listContainer.addEventListener('dragstart', (e) => {
-            if (e.target.tagName === 'LI') {
-                e.target.classList.add('dragging');
-            }
+            if (e.target.tagName === 'LI') e.target.classList.add('dragging');
         });
 
         listContainer.addEventListener('dragend', (e) => {
@@ -235,7 +255,6 @@
             listContainer.insertBefore(draggingItem, nextSibling);
         });
 
-        // עדכון טבלת הניתוח הסטטיסטי
         function updateAnalysisTable() {
             const tbody = document.getElementById('analysis-table-body');
             tbody.innerHTML = '';
@@ -246,7 +265,7 @@
                 const teamId = li.dataset.id;
                 const team = idMap[teamId];
                 const myRank = index + 1;
-                const diff = team.fifa - myRank; // חיובי = הפתיעה לטובה, שלילי = איכזבה
+                const diff = team.fifa - myRank; 
                 
                 let diffClass = 'zero-diff';
                 let diffText = diff.toString();
@@ -257,9 +276,12 @@
                     diffClass = 'neg-diff';
                 }
                 
+                const stageInfo = getStageInfo(myRank);
+                
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${myRank}</strong></td>
+                    <td class="${stageInfo.className}">${stageInfo.text}</td>
                     <td>${team.name}</td>
                     <td>${team.fifa}</td>
                     <td class="${diffClass}">${diffText}</td>
@@ -268,7 +290,6 @@
             });
         }
 
-        // הרצה ראשונית של הטבלה
         updateAnalysisTable();
     </script>
 </body>
