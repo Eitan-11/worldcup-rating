@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מחשבון פערים מתקדם - מונדיאל 2026</title>
+    <!-- ספרייה להצגת דגלים תקינה בכל הדפדפנים והמחשבים -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,12 +24,12 @@
             flex-wrap: wrap;
             gap: 25px;
             justify-content: center;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
         .panel {
             flex: 1;
-            min-width: 450px;
+            min-width: 400px;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -91,15 +93,24 @@
             border-radius: 4px;
             font-size: 0.8em;
         }
+        
+        /* עיצוב אמוג'י דגלים אחיד */
+        img.emoji {
+            height: 1em;
+            width: 1.3em;
+            margin-left: 6px;
+            vertical-align: -0.1em;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
         th, td {
-            padding: 8px 6px;
+            padding: 8px 4px;
             text-align: center;
             border-bottom: 1px solid #ddd;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
         th {
             background-color: #2d6a4f;
@@ -134,8 +145,8 @@
     <div class="container">
         <!-- פאנל ימני: סידור לפי שלבים -->
         <div class="panel">
-            <h2>🥇 סידור הנבחרות לפי שלבי הטורניר</h2>
-            <div class="instruction">גרור נבחרות כדי לסדר את הדירוג הפנימי (ניתן להעביר גם בין שלבים)</div>
+            <h2>🥇 סידור הנבחרות לפי שלבים</h2>
+            <div class="instruction">גרור נבחרות כדי לסדר את המיקום הפנימי והשלב</div>
             
             <div class="scrollable-area">
                 <div class="stage-box">
@@ -167,8 +178,8 @@
 
         <!-- פאנל שמאלי: טבלת הפתעות ואכזבות ממוינת -->
         <div class="panel">
-            <h2>📈 מדד הסטייה: מההפתעה הכי גדולה לאכזבה הכי גדולה</h2>
-            <div class="instruction">הטבלה ממוינת אוטומטית לפי הפרש הפער (פיפ"א פחות המיקום שלך)</div>
+            <h2>📈 מדד הסטייה: לפי מיקום צפוי בטורניר</h2>
+            <div class="instruction">הפרש = מיקום צפוי (על בסיס דירוג פיפ"א יחסי 1-48) פחות המיקום שלך</div>
             <div class="scrollable-area">
                 <table>
                     <thead>
@@ -176,8 +187,9 @@
                             <th>נבחרת</th>
                             <th>שלב אצלך</th>
                             <th>מיקום סופי</th>
-                            <th>דירוג פיפ"א</th>
-                            <th>הפרש פער</th>
+                            <th>צפוי (1-48)</th>
+                            <th>דירוג עולמי</th>
+                            <th>הפרש</th>
                         </tr>
                     </thead>
                     <tbody id="analysis-table-body">
@@ -188,6 +200,8 @@
         </div>
     </div>
 
+    <!-- טעינת סקריפט הדגלים החלופי -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js" crossorigin="anonymous"></script>
     <script>
         // רשימת 48 הנבחרות המדויקת והמתוקנת למונדיאל 2026 עם דירוגי פיפ"א רשמיים ומאומתים
         const initialTeams = [
@@ -230,16 +244,22 @@
             { id: 36, name: "קונגו DR 🇨🇩", fifa: 46, initialStage: "round32" },
             { id: 37, name: "גאנה 🇬🇭", fifa: 73, initialStage: "round32" },
             { id: 38, name: "אוזבקיסטן 🇺🇿", fifa: 50, initialStage: "groups" },
-            { id: 39, name: "כף ורדה 🇨🇻", fifa: 67, initialStage: "round32" },
+            { id: 39, name: "כף ורדה 🇨ו", fifa: 67, initialStage: "round32" },
             { id: 40, name: "דרום אפריקה 🇿🇦", fifa: 60, initialStage: "round32" },
             { id: 41, name: "עיראק 🇮🇶", fifa: 57, initialStage: "groups" },
-            { id: 42, name: "ירדן JO", fifa: 63, initialStage: "groups" },
+            { id: 42, name: "ירדן 🇯🇴", fifa: 63, initialStage: "groups" },
             { id: 43, name: "קטר 🇶🇦", fifa: 56, initialStage: "groups" },
             { id: 44, name: "ערב הסעודית 🇸🇦", fifa: 61, initialStage: "groups" },
             { id: 45, name: "האיטי 🇭🇹", fifa: 83, initialStage: "groups" },
             { id: 46, name: "ניו זילנד 🇳🇿", fifa: 85, initialStage: "groups" },
             { id: 47, name: "קורסאו 🇨🇼", fifa: 82, initialStage: "groups" }
         ];
+
+        // מיון מוקדם של כל הנבחרות לפי דירוג פיפ"א כדי לקבוע את המיקום הצפוי בטורניר (1 עד 48)
+        const sortedByFifa = [...initialTeams].sort((a, b) => a.fifa - b.fifa);
+        sortedByFifa.forEach((team, index) => {
+            team.expectedRank = index + 1; // הנבחרת הטובה ביותר מקבלת 1, החלשה ביותר מקבלת 48
+        });
 
         const idMap = {};
         initialTeams.forEach(t => idMap[t.id] = t);
@@ -258,6 +278,8 @@
                     container.appendChild(li);
                 }
             });
+            // רינדור של אמוג'י הדגלים לתמונות כדי שיעבדו בכל מערכת
+            twemoji.parse(document.body);
         }
 
         initLists();
@@ -274,12 +296,16 @@
         const lists = document.querySelectorAll('ul.sortable-list');
         lists.forEach(list => {
             list.addEventListener('dragstart', (e) => {
-                if (e.target.tagName === 'LI') e.target.classList.add('dragging');
+                if (e.target.tagName === 'LI' || e.target.closest('li')) {
+                    const li = e.target.tagName === 'LI' ? e.target : e.target.closest('li');
+                    li.classList.add('dragging');
+                }
             });
 
             list.addEventListener('dragend', (e) => {
-                if (e.target.tagName === 'LI') {
-                    e.target.classList.remove('dragging');
+                const li = document.querySelector('.dragging');
+                if (li) {
+                    li.classList.remove('dragging');
                     updateAnalysisTable();
                 }
             });
@@ -287,8 +313,9 @@
             list.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 const draggingItem = document.querySelector('.dragging');
-                const siblings = [...list.querySelectorAll('li:not(.dragging)')];
+                if (!draggingItem) return;
                 
+                const siblings = [...list.querySelectorAll('li:not(.dragging)')];
                 let nextSibling = siblings.find(sibling => {
                     return e.clientY <= sibling.getBoundingClientRect().top + sibling.getBoundingClientRect().height / 2;
                 });
@@ -313,10 +340,12 @@
                 items.forEach(item => {
                     const team = idMap[item.dataset.id];
                     if (team) {
-                        const diff = team.fifa - currentGlobalRank;
+                        // חישוב ההפרש בין המיקום הצפוי (1-48) למיקום שהמשתמש קבע (currentGlobalRank)
+                        const diff = team.expectedRank - currentGlobalRank;
                         collectedData.push({
                             name: team.name,
                             fifa: team.fifa,
+                            expectedRank: team.expectedRank,
                             myRank: currentGlobalRank,
                             diff: diff,
                             stageText: stageInfo.text,
@@ -327,6 +356,7 @@
                 });
             });
 
+            // מיון מההפתעה הכי גדולה (פער חיובי גבוה) לאכזבה הכי גדולה
             collectedData.sort((a, b) => b.diff - a.diff);
 
             collectedData.forEach(row => {
@@ -344,13 +374,18 @@
                     <td><strong>${row.name}</strong></td>
                     <td><span class="badge-stage ${row.stageCls}">${row.stageText}</span></td>
                     <td>מקום ${row.myRank}</td>
+                    <td>מקום ${row.expectedRank}</td>
                     <td>${row.fifa}</td>
                     <td class="${diffClass}">${diffText}</td>
                 `;
                 tbody.appendChild(tr);
             });
+            
+            // רינדור מחדש של הדגלים בטבלה החדשה שנבנתה
+            twemoji.parse(tbody);
         }
 
+        // הפעלה ראשונית של הטבלה
         updateAnalysisTable();
     </script>
 </body>
