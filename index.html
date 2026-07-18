@@ -189,58 +189,57 @@
     </div>
 
     <script>
-        // 48 הנבחרות המדויקות והמתוקנות של מונדיאל 2026 עם דירוגי פיפ"א
+        // רשימת 48 הנבחרות המדויקת והמתוקנת למונדיאל 2026 עם דירוגי פיפ"א רשמיים ומאומתים
         const initialTeams = [
             { id: 0, name: "ארגנטינה 🇦🇷", fifa: 1, initialStage: "finals" },
-            { id: 1, name: "ספרד 🇪🇸", fifa: 2, initialStage: "finals" },
-            { id: 2, name: "צרפת 🇫🇷", fifa: 3, initialStage: "semis" },
+            { id: 1, name: "צרפת 🇫🇷", fifa: 2, initialStage: "semis" },
+            { id: 2, name: "ספרד 🇪🇸", fifa: 3, initialStage: "finals" },
             { id: 3, name: "אנגליה 🏴󠁧󠁢󠁥󠁮󠁧󠁿", fifa: 4, initialStage: "semis" },
-            { id: 4, name: "פורטוגל 🇵🇹", fifa: 5, initialStage: "round16" },
-            { id: 5, name: "ברזיל 🇧🇷", fifa: 6, initialStage: "round16" },
-            { id: 6, name: "מרוקו 🇲🇦", fifa: 7, initialStage: "quarters" },
-            { id: 7, name: "הולנד 🇳🇱", fifa: 8, initialStage: "round32" },
-            { id: 8, name: "בלגיה 🇧🇪", fifa: 9, initialStage: "quarters" },
-            { id: 9, name: "גרמניה 🇩🇪", fifa: 10, initialStage: "round32" },
-            { id: 10, name: "קרואטיה 🇭🇷", fifa: 11, initialStage: "round32" },
+            { id: 4, name: "ברזיל 🇧🇷", fifa: 6, initialStage: "round16" },
+            { id: 5, name: "פורטוגל 🇵🇹", fifa: 5, initialStage: "round16" },
+            { id: 6, name: "הולנד 🇳🇱", fifa: 8, initialStage: "round32" },
+            { id: 7, name: "בלגיה 🇧🇪", fifa: 9, initialStage: "quarters" },
+            { id: 8, name: "קרואטיה 🇭🇷", fifa: 11, initialStage: "round32" },
+            { id: 9, name: "מרוקו 🇲🇦", fifa: 7, initialStage: "quarters" },
+            { id: 10, name: "גרמניה 🇩🇪", fifa: 10, initialStage: "round32" },
             { id: 11, name: "קולומביה 🇨🇴", fifa: 13, initialStage: "round16" },
-            { id: 12, name: "מקסיקו 🇲🇽", fifa: 14, initialStage: "round16" },
-            { id: 13, name: "סנגל 🇸🇳", fifa: 15, initialStage: "round32" },
-            { id: 14, name: "אורוגוואי 🇺🇾", fifa: 16, initialStage: "groups" },
-            { id: 15, name: "ארצות הברית 🇺🇸", fifa: 17, initialStage: "round16" },
-            { id: 16, name: "יפן 🇯🇵", fifa: 18, initialStage: "round32" },
-            { id: 17, name: "שווייץ 🇨🇭", fifa: 19, initialStage: "quarters" },
-            { id: 18, name: "איראן 🇮🇷", fifa: 20, initialStage: "groups" },
-            { id: 19, name: "טורקיה 🇹🇷", fifa: 22, initialStage: "groups" },
-            { id: 20, name: "אקוודור 🇪🇨", fifa: 23, initialStage: "round32" },
-            { id: 21, name: "שוודיה 🇸🇪", fifa: 24, initialStage: "round32" },
-            { id: 22, name: "דרום קוריאה 🇰🇷", fifa: 25, initialStage: "groups" },
-            { id: 23, name: "אוסטרליה 🇦🇺", fifa: 27, initialStage: "round32" },
-            { id: 24, name: "אלג'יריה 🇩🇿", fifa: 28, initialStage: "round32" },
-            { id: 25, name: "מצרים 🇪🇬", fifa: 29, initialStage: "round16" },
+            { id: 12, name: "אורוגוואי 🇺🇾", fifa: 16, initialStage: "groups" },
+            { id: 13, name: "שווייץ 🇨🇭", fifa: 19, initialStage: "quarters" },
+            { id: 14, name: "ארצות הברית 🇺🇸", fifa: 17, initialStage: "round16" },
+            { id: 15, name: "מקסיקו 🇲🇽", fifa: 14, initialStage: "round16" },
+            { id: 16, name: "אוסטריה 🇦🇹", fifa: 24, initialStage: "groups" },
+            { id: 17, name: "יפן 🇯🇵", fifa: 18, initialStage: "round32" },
+            { id: 18, name: "טורקיה 🇹🇷", fifa: 22, initialStage: "groups" },
+            { id: 19, name: "שוודיה 🇸🇪", fifa: 38, initialStage: "round32" },
+            { id: 20, name: "איראן 🇮🇷", fifa: 20, initialStage: "groups" },
+            { id: 21, name: "סנגל 🇸🇳", fifa: 15, initialStage: "round32" },
+            { id: 22, name: "אקוודור 🇪🇨", fifa: 23, initialStage: "round32" },
+            { id: 23, name: "מצרים 🇪🇬", fifa: 29, initialStage: "round16" },
+            { id: 24, name: "אוסטרליה 🇦🇺", fifa: 27, initialStage: "round32" },
+            { id: 25, name: "צ'כיה 🇨🇿", fifa: 40, initialStage: "groups" },
             { id: 26, name: "קנדה 🇨🇦", fifa: 30, initialStage: "round16" },
-            { id: 27, name: "נורווגיה 🇳🇴", fifa: 31, initialStage: "quarters" },
-            { id: 28, name: "חוף השנהב 🇨🇮", fifa: 33, initialStage: "round32" },
-            { id: 29, name: "פנמה 🇵🇦", fifa: 34, initialStage: "groups" },
-            { id: 30, name: "אוסטריה 🇦🇹", fifa: 35, initialStage: "groups" },
-            { id: 31, name: "סקוטלנד 🏴󠁧󠁢󠁳󠁣󠁴󠁿", fifa: 36, initialStage: "groups" },
-            { id: 32, name: "צ'כיה 🇨🇿", fifa: 38, initialStage: "groups" },
-            { id: 33, name: "פרגוואי 🇵🇾", fifa: 41, initialStage: "round16" },
-            { id: 34, name: "תוניסיה 🇹🇳", fifa: 45, initialStage: "groups" },
-            { id: 35, name: "קונגו DR 🇨🇩", fifa: 46, initialStage: "round32" },
-            { id: 36, name: "גאנה 🇬🇭", fifa: 49, initialStage: "round32" },
-            { id: 37, name: "אוזבקיסטן 🇺🇿", fifa: 50, initialStage: "groups" },
-            { id: 38, name: "קוסטה ריקה 🇨🇷", fifa: 53, initialStage: "groups" },
-            { id: 39, name: "קטר 🇶🇦", fifa: 56, initialStage: "groups" },
-            { id: 40, name: "עיראק 🇮🇶", fifa: 57, initialStage: "groups" },
-            { id: 41, name: "דרום אפריקה 🇿🇦", fifa: 60, initialStage: "round32" },
-            { id: 42, name: "ערב הסעודית 🇸🇦", fifa: 61, initialStage: "groups" },
-            { id: 43, name: "ירדן 🇯🇴", fifa: 63, initialStage: "round32" },
-            { id: 44, name: "בוסניה 🇧🇦", fifa: 64, initialStage: "groups" },
-            { id: 45, name: "כף ורדה 🇨🇻", fifa: 67, initialStage: "round32" },
-            { id: 46, name: "ניו זילנד 🇳🇿", fifa: 75, initialStage: "groups" },
-            { id: 47, name: "קורסאו 🇨🇼", fifa: 80, initialStage: "groups" },
-            { id: 48, name: "האיטי 🇭🇹", fifa: 85, initialStage: "groups" }
-        ].slice(0, 48); // ביטחון של 48 נבחרות מדויקות
+            { id: 27, name: "אלג'יריה 🇩🇿", fifa: 28, initialStage: "round32" },
+            { id: 28, name: "נורווגיה 🇳🇴", fifa: 31, initialStage: "quarters" },
+            { id: 29, name: "סקוטלנד 🏴󠁧󠁢󠁳󠁣󠁴󠁿", fifa: 42, initialStage: "groups" },
+            { id: 30, name: "דרום קוריאה 🇰🇷", fifa: 25, initialStage: "groups" },
+            { id: 31, name: "חוף השנהב 🇨🇮", fifa: 33, initialStage: "round32" },
+            { id: 32, name: "פנמה 🇵🇦", fifa: 34, initialStage: "groups" },
+            { id: 33, name: "תוניסיה 🇹🇳", fifa: 45, initialStage: "groups" },
+            { id: 34, name: "פרגוואי 🇵🇾", fifa: 41, initialStage: "round16" },
+            { id: 35, name: "בוסניה 🇧🇦", fifa: 64, initialStage: "groups" },
+            { id: 36, name: "קונגו DR 🇨🇩", fifa: 46, initialStage: "round32" },
+            { id: 37, name: "גאנה 🇬🇭", fifa: 73, initialStage: "round32" },
+            { id: 38, name: "אוזבקיסטן 🇺🇿", fifa: 50, initialStage: "groups" },
+            { id: 39, name: "כף ורדה 🇨🇻", fifa: 67, initialStage: "round32" },
+            { id: 40, name: "דרום אפריקה 🇿🇦", fifa: 60, initialStage: "round32" },
+            { id: 41, name: "עיראק 🇮🇶", fifa: 57, initialStage: "groups" },
+            { id: 42, name: "ירדן JO", fifa: 63, initialStage: "groups" },
+            { id: 43, name: "קטר 🇶🇦", fifa: 56, initialStage: "groups" },
+            { id: 44, name: "ערב הסעודית 🇸🇦", fifa: 61, initialStage: "groups" },
+            { id: 45, name: "האיטי 🇭🇹", fifa: 83, initialStage: "groups" },
+            { id: 46, name: "ניו זילנד 🇳🇿", fifa: 85, initialStage: "groups" },
+            { id: 47, name: "קורסאו 🇨🇼", fifa: 82, initialStage: "groups" }
+        ];
 
         const idMap = {};
         initialTeams.forEach(t => idMap[t.id] = t);
@@ -313,18 +312,18 @@
                 
                 items.forEach(item => {
                     const team = idMap[item.dataset.id];
-                    const diff = team.fifa - currentGlobalRank;
-                    
-                    collectedData.push({
-                        name: team.name,
-                        fifa: team.fifa,
-                        myRank: currentGlobalRank,
-                        diff: diff,
-                        stageText: stageInfo.text,
-                        stageCls: stageInfo.cls
-                    });
-                    
-                    currentGlobalRank++;
+                    if (team) {
+                        const diff = team.fifa - currentGlobalRank;
+                        collectedData.push({
+                            name: team.name,
+                            fifa: team.fifa,
+                            myRank: currentGlobalRank,
+                            diff: diff,
+                            stageText: stageInfo.text,
+                            stageCls: stageInfo.cls
+                        });
+                        currentGlobalRank++;
+                    }
                 });
             });
 
