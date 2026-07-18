@@ -244,7 +244,7 @@
             { id: 36, name: "קונגו DR 🇨🇩", fifa: 46, initialStage: "round32" },
             { id: 37, name: "גאנה 🇬🇭", fifa: 73, initialStage: "round32" },
             { id: 38, name: "אוזבקיסטן 🇺🇿", fifa: 50, initialStage: "groups" },
-            { id: 39, name: "כף ורדה 🇨ו", fifa: 67, initialStage: "round32" },
+            { id: 39, name: "כף ורדה 🇨🇵", fifa: 67, initialStage: "round32" }, // תוקן קוד הדגל
             { id: 40, name: "דרום אפריקה 🇿🇦", fifa: 60, initialStage: "round32" },
             { id: 41, name: "עיראק 🇮🇶", fifa: 57, initialStage: "groups" },
             { id: 42, name: "ירדן 🇯🇴", fifa: 63, initialStage: "groups" },
@@ -278,11 +278,12 @@
                     container.appendChild(li);
                 }
             });
-            // רינדור של אמוג'י הדגלים לתמונות כדי שיעבדו בכל מערכת
-            twemoji.parse(document.body);
+            
+            // הפעלת רינדור הדגלים
+            if (typeof twemoji !== 'undefined') {
+                twemoji.parse(document.body);
+            }
         }
-
-        initLists();
 
         function getStageDisplay(listId) {
             if (listId === 'stage-finals') return { text: "גמר", cls: "b-g" };
@@ -296,8 +297,8 @@
         const lists = document.querySelectorAll('ul.sortable-list');
         lists.forEach(list => {
             list.addEventListener('dragstart', (e) => {
-                if (e.target.tagName === 'LI' || e.target.closest('li')) {
-                    const li = e.target.tagName === 'LI' ? e.target : e.target.closest('li');
+                const li = e.target.tagName === 'LI' ? e.target : e.target.closest('li');
+                if (li) {
                     li.classList.add('dragging');
                 }
             });
@@ -306,8 +307,8 @@
                 const li = document.querySelector('.dragging');
                 if (li) {
                     li.classList.remove('dragging');
-                    updateAnalysisTable();
                 }
+                updateAnalysisTable();
             });
 
             list.addEventListener('dragover', (e) => {
@@ -326,6 +327,7 @@
 
         function updateAnalysisTable() {
             const tbody = document.getElementById('analysis-table-body');
+            if (!tbody) return;
             tbody.innerHTML = '';
             
             const stageOrder = ['stage-finals', 'stage-semis', 'stage-quarters', 'stage-round16', 'stage-round32', 'stage-groups'];
@@ -334,26 +336,27 @@
 
             stageOrder.forEach(listId => {
                 const listEl = document.getElementById(listId);
-                const items = [...listEl.querySelectorAll('li')];
-                const stageInfo = getStageDisplay(listId);
-                
-                items.forEach(item => {
-                    const team = idMap[item.dataset.id];
-                    if (team) {
-                        // חישוב ההפרש בין המיקום הצפוי (1-48) למיקום שהמשתמש קבע (currentGlobalRank)
-                        const diff = team.expectedRank - currentGlobalRank;
-                        collectedData.push({
-                            name: team.name,
-                            fifa: team.fifa,
-                            expectedRank: team.expectedRank,
-                            myRank: currentGlobalRank,
-                            diff: diff,
-                            stageText: stageInfo.text,
-                            stageCls: stageInfo.cls
-                        });
-                        currentGlobalRank++;
-                    }
-                });
+                if (listEl) {
+                    const items = [...listEl.querySelectorAll('li')];
+                    const stageInfo = getStageDisplay(listId);
+                    
+                    items.forEach(item => {
+                        const team = idMap[item.dataset.id];
+                        if (team) {
+                            const diff = team.expectedRank - currentGlobalRank;
+                            collectedData.push({
+                                name: team.name,
+                                fifa: team.fifa,
+                                expectedRank: team.expectedRank,
+                                myRank: currentGlobalRank,
+                                diff: diff,
+                                stageText: stageInfo.text,
+                                stageCls: stageInfo.cls
+                            });
+                            currentGlobalRank++;
+                        }
+                    });
+                }
             });
 
             // מיון מההפתעה הכי גדולה (פער חיובי גבוה) לאכזבה הכי גדולה
@@ -381,12 +384,16 @@
                 tbody.appendChild(tr);
             });
             
-            // רינדור מחדש של הדגלים בטבלה החדשה שנבנתה
-            twemoji.parse(tbody);
+            if (typeof twemoji !== 'undefined') {
+                twemoji.parse(tbody);
+            }
         }
 
-        // הפעלה ראשונית של הטבלה
-        updateAnalysisTable();
+        // הפעלה ראשונית
+        window.addEventListener('DOMContentLoaded', () => {
+            initLists();
+            updateAnalysisTable();
+        });
     </script>
 </body>
 </html>
