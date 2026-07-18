@@ -110,7 +110,7 @@
             padding: 8px 4px;
             text-align: center;
             border-bottom: 1px solid #ddd;
-            font-size: 0.85em;
+            font-size: 0.82em;
         }
         th {
             background-color: #2d6a4f;
@@ -178,8 +178,8 @@
 
         <!-- פאנל שמאלי: טבלת הפתעות ואכזבות ממוינת -->
         <div class="panel">
-            <h2>📈 מדד הסטייה: לפי מיקום צפוי בטורניר</h2>
-            <div class="instruction">הפרש = מיקום צפוי (על בסיס דירוג פיפ"א יחסי 1-48) פחות המיקום שלך</div>
+            <h2>📈 מדד הסטייה המורחב</h2>
+            <div class="instruction">הטבלה ממוינת לפי פער המיקום הצפוי (1-48)</div>
             <div class="scrollable-area">
                 <table>
                     <thead>
@@ -188,8 +188,9 @@
                             <th>שלב אצלך</th>
                             <th>מיקום סופי</th>
                             <th>צפוי (1-48)</th>
+                            <th>פער צפוי</th>
                             <th>דירוג עולמי</th>
-                            <th>הפרש</th>
+                            <th>פער פיפ"א גולמי</th>
                         </tr>
                     </thead>
                     <tbody id="analysis-table-body">
@@ -244,7 +245,7 @@
             { id: 36, name: "קונגו DR 🇨🇩", fifa: 46, initialStage: "round32" },
             { id: 37, name: "גאנה 🇬🇭", fifa: 73, initialStage: "round32" },
             { id: 38, name: "אוזבקיסטן 🇺🇿", fifa: 50, initialStage: "groups" },
-            { id: 39, name: "כף ורדה 🇨🇵", fifa: 67, initialStage: "round32" }, // תוקן קוד הדגל
+            { id: 39, name: "כף ורדה 🇨🇵", fifa: 67, initialStage: "round32" },
             { id: 40, name: "דרום אפריקה 🇿🇦", fifa: 60, initialStage: "round32" },
             { id: 41, name: "עיראק 🇮🇶", fifa: 57, initialStage: "groups" },
             { id: 42, name: "ירדן 🇯🇴", fifa: 63, initialStage: "groups" },
@@ -258,7 +259,7 @@
         // מיון מוקדם של כל הנבחרות לפי דירוג פיפ"א כדי לקבוע את המיקום הצפוי בטורניר (1 עד 48)
         const sortedByFifa = [...initialTeams].sort((a, b) => a.fifa - b.fifa);
         sortedByFifa.forEach((team, index) => {
-            team.expectedRank = index + 1; // הנבחרת הטובה ביותר מקבלת 1, החלשה ביותר מקבלת 48
+            team.expectedRank = index + 1;
         });
 
         const idMap = {};
@@ -279,7 +280,6 @@
                 }
             });
             
-            // הפעלת רינדור הדגלים
             if (typeof twemoji !== 'undefined') {
                 twemoji.parse(document.body);
             }
@@ -298,16 +298,12 @@
         lists.forEach(list => {
             list.addEventListener('dragstart', (e) => {
                 const li = e.target.tagName === 'LI' ? e.target : e.target.closest('li');
-                if (li) {
-                    li.classList.add('dragging');
-                }
+                if (li) li.classList.add('dragging');
             });
 
             list.addEventListener('dragend', (e) => {
                 const li = document.querySelector('.dragging');
-                if (li) {
-                    li.classList.remove('dragging');
-                }
+                if (li) li.classList.remove('dragging');
                 updateAnalysisTable();
             });
 
@@ -343,13 +339,16 @@
                     items.forEach(item => {
                         const team = idMap[item.dataset.id];
                         if (team) {
-                            const diff = team.expectedRank - currentGlobalRank;
+                            const expectedDiff = team.expectedRank - currentGlobalRank; // פער לפי מיקום צפוי (1-48)
+                            const rawFifaDiff = team.fifa - currentGlobalRank;       // פער לפי דירוג פיפ"א גולמי
+                            
                             collectedData.push({
                                 name: team.name,
                                 fifa: team.fifa,
                                 expectedRank: team.expectedRank,
                                 myRank: currentGlobalRank,
-                                diff: diff,
+                                expectedDiff: expectedDiff,
+                                rawFifaDiff: rawFifaDiff,
                                 stageText: stageInfo.text,
                                 stageCls: stageInfo.cls
                             });
@@ -359,18 +358,21 @@
                 }
             });
 
-            // מיון מההפתעה הכי גדולה (פער חיובי גבוה) לאכזבה הכי גדולה
-            collectedData.sort((a, b) => b.diff - a.diff);
+            // מיון לפי הפער מהמיקום הצפוי (1-48)
+            collectedData.sort((a, b) => b.expectedDiff - a.expectedDiff);
 
             collectedData.forEach(row => {
-                let diffClass = 'zero-diff';
-                let diffText = row.diff.toString();
-                if (row.diff > 0) {
-                    diffClass = 'pos-diff';
-                    diffText = `+${row.diff}`;
-                } else if (row.diff < 0) {
-                    diffClass = 'neg-diff';
-                }
+                // עיצוב מחלקות לפער צפוי (1-48)
+                let expClass = 'zero-diff';
+                let expText = row.expectedDiff.toString();
+                if (row.expectedDiff > 0) { expClass = 'pos-diff'; expText = `+${row.expectedDiff}`; }
+                else if (row.expectedDiff < 0) { expClass = 'neg-diff'; }
+
+                // עיצוב מחלקות לפער פיפ"א גולמי
+                let rawClass = 'zero-diff';
+                let rawText = row.rawFifaDiff.toString();
+                if (row.rawFifaDiff > 0) { rawClass = 'pos-diff'; rawText = `+${row.rawFifaDiff}`; }
+                else if (row.rawFifaDiff < 0) { rawClass = 'neg-diff'; }
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -378,8 +380,9 @@
                     <td><span class="badge-stage ${row.stageCls}">${row.stageText}</span></td>
                     <td>מקום ${row.myRank}</td>
                     <td>מקום ${row.expectedRank}</td>
+                    <td class="${expClass}">${expText}</td>
                     <td>${row.fifa}</td>
-                    <td class="${diffClass}">${diffText}</td>
+                    <td class="${rawClass}">${rawText}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -389,7 +392,6 @@
             }
         }
 
-        // הפעלה ראשונית
         window.addEventListener('DOMContentLoaded', () => {
             initLists();
             updateAnalysisTable();
